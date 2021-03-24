@@ -23,16 +23,15 @@ const keyUpHandler = (e) => {
   }
 }
 
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
-
-//
-document.querySelector('#game-info button').addEventListener('click', (e) => {
-
+const clickButton = (e) => {
   if (e.target.innerText === 'Start') {
     e.target.innerText = 'Restart';
   } else if (e.target.innerText === 'Restart') {
     document.location.reload();
   }
-  // e.target.innerText = 'Restart'
-})
+}
+
+//
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+document.querySelector('#game-info button').addEventListener('click', clickButton, false)
