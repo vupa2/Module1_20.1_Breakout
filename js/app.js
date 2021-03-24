@@ -18,10 +18,11 @@ const drawAll = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = "#2b2e4a";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
   brickWall.draw();
   paddle.draw();
-  ball.update(paddle, brickWall);
   ball.draw();
+  update(ball, paddle, brickWall);
 
   requestAnimationFrame(drawAll);
 }

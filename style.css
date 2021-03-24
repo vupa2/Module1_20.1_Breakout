@@ -4,8 +4,7 @@ body {
 
 #mainGame {
   margin: auto;
+  border-radius: 10px;
   border: 5px solid #f37121;
-  border-bottom: 1px solid #f37121;
-  border-radius: 5px;
-  /* background-color: aqua; */
+  border-bottom-color: #fc1f0f;
 }

@@ -18,41 +18,7 @@ class Ball {
     ctx.closePath();
   }
 
-  update(paddle, brickWall) {
-    // Thay doi chieu speed khi cham tuong
-    if (this.x + this.dx > canvas.width - this.ballRadius || this.x + this.dx < this.ballRadius) {
-      this.dx = -this.dx;
-    }
 
-    // Thay doi chieu speed khi cham tuong + paddle
-    if (this.y + this.dy < this.ballRadius) {
-      this.dy = -this.dy;
-    } else if (this.y + this.dy > paddle.y & this.x > paddle.x && this.x < paddle.x + paddle.width) {
-      this.dy = -this.dy;
-    } else if (this.y + this.dy > canvas.height - this.ballRadius) {
-      this.dy = -this.dy; // lose
-      // alert("GAME OVER");
-      // document.location.reload();
-    }
-
-    // Thay doi chieu speed khi cham brick
-    for (let col = 0; col < brickWall.brickColumnCount; col++) {
-      for (let row = 0; row < brickWall.brickRowCount; row++) {
-        if (brickWall.bricks[col][row].status) {
-          if (this.x > brickWall.bricks[col][row].x && this.x < brickWall.bricks[col][row].x + brickWall.bricks[col][row].width && this.y > brickWall.bricks[col][row].y && this.y < brickWall.bricks[col][row].y + brickWall.bricks[col][row].height) {
-            this.dy = -this.dy * 1.005;
-
-            brickWall.bricks[col][row].status = false;
-            brickWall.powerUps[col][row].status = true;
-          }
-        }
-      }
-    }
-
-    // Thay doi vi tri
-    this.x += this.dx;
-    this.y += this.dy;
-  }
 }
 
 class Paddle {
@@ -123,7 +89,7 @@ class BricksWall {
   setUp() {
     for (let col = 0; col < this.brickColumnCount; col++) {
       this.bricks[col] = [];
-      this.powerUps[col] = [];;
+      this.powerUps[col] = [];
       for (let row = 0; row < this.brickRowCount; row++) {
         this.bricks[col][row] = new Brick();
         this.powerUps[col][row] = new PowerUp();
@@ -135,14 +101,15 @@ class BricksWall {
     // Ve hinh
     for(let col = 0; col < this.brickColumnCount; col++) {
       for(let row = 0; row < this.brickRowCount; row++) {
-        if (this.bricks[col][row].status) {
-          this.bricks[col][row].x = (col * (this.bricks[col][row].width + this.padding)) + this.brickOffsetLeft;
-          this.bricks[col][row].y = (row * (this.bricks[col][row].height + this.padding)) + this.brickOffsetTop;
+        const bricks = this.bricks[col][row];
 
-          this.powerUps[col][row].setUp(this.bricks[col][row].x, this.bricks[col][row].y, this.bricks[col][row].width, this.bricks[col][row].height);
+        if (bricks.status) {
+          bricks.x = (col * (bricks.width + this.padding)) + this.brickOffsetLeft;
+          bricks.y = (row * (bricks.height + this.padding)) + this.brickOffsetTop;
 
-          this.bricks[col][row].draw();
+          this.powerUps[col][row].setUp(bricks.x, bricks.y, bricks.width, bricks.height);
 
+          bricks.draw();
         }
         this.powerUps[col][row].draw();
       }
@@ -171,8 +138,6 @@ class PowerUp {
 
   draw() {
     if (this.status) {
-      this.update();
-
       ctx.beginPath();
       ctx.fillStyle = this.color;
       ctx.strokeStyle = this.color;
