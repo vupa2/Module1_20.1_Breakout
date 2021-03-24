@@ -38,10 +38,12 @@ class Ball {
     // Thay doi chieu speed khi cham brick
     for (let col = 0; col < brickWall.brickColumnCount; col++) {
       for (let row = 0; row < brickWall.brickRowCount; row++) {
-        if (brickWall.bricks[col][row].status === 1) {
+        if (brickWall.bricks[col][row].status) {
           if (this.x > brickWall.bricks[col][row].x && this.x < brickWall.bricks[col][row].x + brickWall.bricks[col][row].width && this.y > brickWall.bricks[col][row].y && this.y < brickWall.bricks[col][row].y + brickWall.bricks[col][row].height) {
             this.dy = -this.dy * 1.005;
-            brickWall.bricks[col][row].status = 0;
+
+            brickWall.bricks[col][row].status = false;
+            brickWall.powerUps[col][row].status = true;
           }
         }
       }
@@ -93,15 +95,17 @@ class Brick {
     this.x = 0;
     this.y = 0
     this.color = '#e84545';
-    this.status = 1;
+    this.status = true;
   }
 
   draw() {
-    ctx.beginPath();
-    ctx.rect(this.x, this.y, this.width, this.height);
-    ctx.fillStyle = this.color;
-    ctx.fill();
-    ctx.closePath();
+    if (this.status) {
+      ctx.beginPath();
+      ctx.rect(this.x, this.y, this.width, this.height);
+      ctx.fillStyle = this.color;
+      ctx.fill();
+      ctx.closePath();
+    }
   }
 }
 
@@ -131,13 +135,15 @@ class BricksWall {
     // Ve hinh
     for(let col = 0; col < this.brickColumnCount; col++) {
       for(let row = 0; row < this.brickRowCount; row++) {
-        if (this.bricks[col][row].status === 1) {
+        if (this.bricks[col][row].status) {
           this.bricks[col][row].x = (col * (this.bricks[col][row].width + this.padding)) + this.brickOffsetLeft;
           this.bricks[col][row].y = (row * (this.bricks[col][row].height + this.padding)) + this.brickOffsetTop;
-          this.powerUps[col][row].setUp(this.bricks[col][row].x, this.bricks[col][row].y, this.bricks[col][row].width, this.bricks[col][row].height)
-          this.bricks[col][row].draw();
-        }
 
+          this.powerUps[col][row].setUp(this.bricks[col][row].x, this.bricks[col][row].y, this.bricks[col][row].width, this.bricks[col][row].height);
+
+          this.bricks[col][row].draw();
+
+        }
         this.powerUps[col][row].draw();
       }
     }
@@ -150,10 +156,10 @@ class PowerUp {
     this.height = 0;
     this.x = 0;
     this.y = 0;
-    this.speed = 7;
+    this.speed = 5;
     this.color = '#fff600';
     this.symbol = '~'
-    this.display = true;
+    this.status = false;
   }
 
   setUp(brickX, brickY, brickWidth, brickHeight) {
@@ -164,7 +170,9 @@ class PowerUp {
   }
 
   draw() {
-    if (this.display) {
+    if (this.status) {
+      this.update();
+
       ctx.beginPath();
       ctx.fillStyle = this.color;
       ctx.strokeStyle = this.color;
@@ -174,12 +182,16 @@ class PowerUp {
       ctx.textAlign = "center";
       ctx.fillText(this.symbol, this.x, this.y);
       ctx.closePath();
-
-      this.update();
     }
   }
 
   update() {
-    this.y += this.speed;
+    if (this.status) {
+      if (this.y >= canvas.height) {
+        this.status = false;
+      } else {
+        this.y += this.speed;
+      }
+    }
   }
 }
