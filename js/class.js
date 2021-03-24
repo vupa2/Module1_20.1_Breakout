@@ -1,12 +1,12 @@
 class Ball {
   constructor() {
     this.x = canvas.width / 2;
-    this.y = canvas.height / 1.2;
-    this.ballRadius = 15;
-    this.speed = 7;
+    this.y = canvas.height / 1.4;
+    this.ballRadius = 8;
+    this.speed = 4;
     this.dx = this.speed;
     this.dy = -this.speed;
-    this.color = getRandomColor();
+    this.color = '#e7e6e1';
   }
 
   draw() {
@@ -55,12 +55,12 @@ class Ball {
 
 class Paddle {
   constructor() {
-    this.height = 15;
-    this.width = 150;
+    this.height = 8;
+    this.width = 50;
     this.x = (canvas.width - this.width) / 2;
     this.y = canvas.height - this.height - 50;
-    this.color = 'blue';
-    this.speed = 7;
+    this.color = '#f2a154';
+    this.speed = 8;
   }
 
   draw() {
@@ -88,12 +88,11 @@ class Paddle {
 
 class Brick {
   constructor() {
-    this.width = 75;
-    this.height = 30;
+    this.width = 67;
+    this.height = 27;
     this.x = 0;
     this.y = 0
-    this.padding = 10;
-    this.color = getRandomColor();
+    this.color = '#e84545';
     this.status = 1;
   }
 
@@ -108,10 +107,11 @@ class Brick {
 
 class BricksWall {
   constructor() {
-    this.brickRowCount = 12;
+    this.padding = 8;
+    this.brickRowCount = 7;
     this.brickColumnCount = 6;
-    this.brickOffsetTop = 50;
-    this.brickOffsetLeft = 55;
+    this.brickOffsetTop = 25;
+    this.brickOffsetLeft = 30;
     this.bricks = [];
     this.powerUps = [];
   }
@@ -132,9 +132,9 @@ class BricksWall {
     for(let col = 0; col < this.brickColumnCount; col++) {
       for(let row = 0; row < this.brickRowCount; row++) {
         if (this.bricks[col][row].status === 1) {
-          this.bricks[col][row].x = (col * (this.bricks[col][row].width + this.bricks[col][row].padding)) + this.brickOffsetLeft;
-          this.bricks[col][row].y = (row * (this.bricks[col][row].height + this.bricks[col][row].padding)) + this.brickOffsetTop;
-          this.powerUps[col][row].setUp(this.bricks[col][row].x, this.bricks[col][row].y)
+          this.bricks[col][row].x = (col * (this.bricks[col][row].width + this.padding)) + this.brickOffsetLeft;
+          this.bricks[col][row].y = (row * (this.bricks[col][row].height + this.padding)) + this.brickOffsetTop;
+          this.powerUps[col][row].setUp(this.bricks[col][row].x, this.bricks[col][row].y, this.bricks[col][row].width, this.bricks[col][row].height)
           this.bricks[col][row].draw();
         }
 
@@ -146,29 +146,40 @@ class BricksWall {
 
 class PowerUp {
   constructor() {
-    this.width = 20;
-    this.height = 20;
+    this.width = 0;
+    this.height = 0;
     this.x = 0;
     this.y = 0;
     this.speed = 7;
-    this.color = getRandomColor();
-    this.symbol = '='
-    this.display = false;
+    this.color = '#fff600';
+    this.symbol = '~'
+    this.display = true;
   }
 
-  setUp(x, y) {
-    this.x = x;
-    this.y = y;
+  setUp(brickX, brickY, brickWidth, brickHeight) {
+    this.x = brickX + brickWidth / 2;
+    this.y = brickY + brickHeight / 2;
+    this.width = brickHeight / 2;
+    this.height = this.width;
   }
 
   draw() {
-    ctx.beginPath();
-    ctx.fillStyle = this.color;
-    ctx.strokeStyle = this.color;
-    ctx.strokeRect(this.x - this.width * 0.5, this.y - this.height * 0.5, this.width, this.height);
-    ctx.font = "bold " + this.height + "px " + "Lucida Console";
-    ctx.textAlign = "center";
-    ctx.fillText(this.symbol, this.x, this.y);
-    ctx.closePath();
+    if (this.display) {
+      ctx.beginPath();
+      ctx.fillStyle = this.color;
+      ctx.strokeStyle = this.color;
+      ctx.strokeRect(this.x - this.width * 0.5, this.y - this.height * 0.5, this.width, this.height);
+      ctx.font = "bold " + this.height + "px " + "Lucida Console";
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = "center";
+      ctx.fillText(this.symbol, this.x, this.y);
+      ctx.closePath();
+
+      this.update();
+    }
+  }
+
+  update() {
+    this.y += this.speed;
   }
 }

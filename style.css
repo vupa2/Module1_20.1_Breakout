@@ -1,5 +1,11 @@
+body {
+  background-color: #111d5e;
+}
+
 #mainGame {
-  border: 10px solid black;
-  border-bottom: 1px solid blue;
+  margin: auto;
+  border: 5px solid #f37121;
+  border-bottom: 1px solid #f37121;
+  border-radius: 5px;
   /* background-color: aqua; */
 }
