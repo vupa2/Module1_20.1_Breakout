@@ -7,6 +7,7 @@ const BALL_RADIUS = 8,
       BALL_X = canvas.width / 2,
       BALL_Y = canvas.height / 1.4,
       BALL_SPEED = 4,
+      BALL_SPEED_MAX = 30,
       BALL_COLOR = '#e7e6e1';
 
 const PADDLE_WIDTH = 80,
@@ -27,21 +28,19 @@ const PupType = {
 }
 
 // Doi Tuong
+const game = new Game();
 const ball = new Ball();
 const paddle = new Paddle();
 const brickWall = new BricksWall();
-const game = new Game();
 brickWall.setUp()
 
 const drawAll = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "#2b2e4a";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+  game.draw();
   brickWall.draw();
   paddle.draw();
   ball.draw();
-  update(game, ball, paddle, brickWall);
+  if (!game.over) update(game, ball, paddle, brickWall);
 
   requestAnimationFrame(drawAll);
 }

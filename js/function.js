@@ -8,8 +8,8 @@ const getRandomColor = () => {
 
 const update = (game, ball, paddle, brickWall) => {
   // Thay doi chieu speed khi cham tuong
-  if (ball.x + ball.dx * 1.01 > canvas.width - ball.ballRadius || ball.x + ball.dx < ball.ballRadius) {
-    ball.dx = -ball.dx * 1.01;
+  if (ball.x + ball.dx > canvas.width - ball.ballRadius || ball.x + ball.dx < ball.ballRadius) {
+    ball.dx = -ball.dx;
   }
 
   // Thay doi chieu speed khi cham tuong + paddle
@@ -45,10 +45,9 @@ const update = (game, ball, paddle, brickWall) => {
         if (bricks.status) {
           if (ball.x >= bricks.x && ball.x <= bricks.x + bricks.width && ball.y >= bricks.y && ball.y <= bricks.y + bricks.height) {
             game.increaseScore();
+			bricks.status = false;
 
-            ball.dy = -ball.dy * 1.01;
-
-            bricks.status = false;
+            if (ball.dx < ball.speedMax && ball.dx > -ball.speedMax) ball.dy = -ball.dy * 1.01;
             if (powerUps) powerUps.status = true;
           }
         }

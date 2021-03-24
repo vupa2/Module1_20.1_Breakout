@@ -1,5 +1,16 @@
 // Bat su kien phim
 let rightPressed = false, leftPressed = false;
+const gameStateControl = () => {
+console.log('run');
+  game.over = false;
+
+  const button = document.querySelector('#game-info button');  
+  if (button.innerText === 'Space To Start') {
+    button.innerText = 'Space To Restart';
+  } else if (button.innerText === 'Space To Restart') {
+    document.location.reload();
+  }
+}
 
 const keyDownHandler = (e) => {
   switch (e.keyCode) {
@@ -8,6 +19,9 @@ const keyDownHandler = (e) => {
       break;
     case 37:
       leftPressed = true;
+      break;
+    case 32:
+      gameStateControl();
       break;
   }
 }
@@ -23,15 +37,6 @@ const keyUpHandler = (e) => {
   }
 }
 
-const clickButton = (e) => {
-  if (e.target.innerText === 'Start') {
-    e.target.innerText = 'Restart';
-  } else if (e.target.innerText === 'Restart') {
-    document.location.reload();
-  }
-}
-
-//
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
-document.querySelector('#game-info button').addEventListener('click', clickButton, false)
+document.querySelector('#game-info button').addEventListener('click', gameStateControl)

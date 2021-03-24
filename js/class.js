@@ -2,6 +2,14 @@ class Game {
   constructor() {
     this.life = LIFE;
     this.score = 0;
+    this.over = true;
+  }
+  
+  draw() {
+	ctx.beginPath();
+    ctx.fillStyle = "#2b2e4a";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.closePath();
   }
 
   decreaseLife() {
@@ -26,6 +34,7 @@ class Ball {
     this.x = BALL_X;
     this.y = BALL_Y;
     this.speed = BALL_SPEED;
+	this.speedMax = BALL_SPEED_MAX;
     this.dx = this.speed;
     this.dy = -this.speed;
     this.color = BALL_COLOR;
@@ -83,7 +92,7 @@ class Brick {
 class BricksWall {
   constructor() {
     this.padding = 8;
-    this.brickRowCount = 9;
+    this.brickRowCount = 8;
     this.brickColumnCount = 6;
     this.brickOffsetTop = 25;
     this.brickOffsetLeft = 30;
