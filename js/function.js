@@ -34,7 +34,7 @@ const update = (game, ball, paddle, brickWall) => {
   }
 
   // Thay doi chieu speed khi cham brick
-  if (brickWall.bricks.every(col => col.every(brick => brick.status === false))) {
+  if (brickWall.bricks.every(col => col.every(brick => brick.status === false)) && ball.y > BALL_Y) {
     brickWall.setUp();
   } else {
     for (let col = 0; col < brickWall.brickColumnCount; col++) {
@@ -52,11 +52,11 @@ const update = (game, ball, paddle, brickWall) => {
             if (powerUps) powerUps.status = true;
           }
         }
-
+        
+        // Cham powerUps
         if (powerUps && powerUps.status) {
           if (powerUps.y + powerUps.height > paddle.y && powerUps.x > paddle.x && powerUps.x + powerUps.width < paddle.x + paddle.width) {
             powerUps.status = false;
-
             switch (powerUps.symbol) {
               case 'I':
                 paddle.width = paddle.width + 50 > canvas.width ? canvas.width : paddle.width + 50;
@@ -68,7 +68,6 @@ const update = (game, ball, paddle, brickWall) => {
                 game.increaseLife();
                 break;
             }
-
           } else if (powerUps.y + powerUps.height > canvas.height) {
             powerUps.status = false;
           } else {
