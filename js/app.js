@@ -1,4 +1,5 @@
-const canvas = document.getElementById("main-game"), ctx = canvas.getContext("2d");
+const canvas = document.getElementById("main-game"),
+      ctx = canvas.getContext("2d");
 
 // Tham so
 const LIFE = 3;
@@ -20,6 +21,7 @@ const PADDLE_WIDTH = 80,
 const BRICK_WIDTH = 67,
       BRICK_HEIGHT = 27,
       BRICK_COLOR = '#e84545';
+      BRICK_LIFE = 2;
 
 const PupType = {
   INCREASE: {color: "#17FF00", symbol: "I"},

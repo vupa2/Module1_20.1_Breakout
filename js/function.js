@@ -3,7 +3,18 @@ const randomNumber = (max, min = 0) => {
 }
 
 const getRandomColor = () => {
-  return `rgb(${randomNumber(255)}, ${randomNumber(255)}, ${randomNumber(255), 1})`;
+  console.log(`rgb(${randomNumber(255)}, ${randomNumber(255)}, ${randomNumber(255)}, 1)`);
+  return `rgb(${randomNumber(255)}, ${randomNumber(255)}, ${randomNumber(255)}, 1)`;
+}
+
+const reduceColorOpacity = (rgbColor) => {
+  const regex = /\d+(\.\d+)?/g;
+  let i = 0
+  return rgbColor.replace(regex, match => {
+    // const newOpacity = parseFloat(match) - 0.25
+    i++;
+    return (i === 4) ? parseFloat(match) - 0.5 : match;
+  });
 }
 
 const update = (game, ball, paddle, brickWall) => {
@@ -33,30 +44,37 @@ const update = (game, ball, paddle, brickWall) => {
     if (paddle.x < 0) paddle.x = 0;
   }
 
-  // Thay doi chieu speed khi cham brick
-  if (brickWall.bricks.every(col => col.every(brick => brick.status === false)) && ball.y > BALL_Y) {
+  // Thay doi chieu speed khi cham bricks va powerUps
+  if (!brickWall.bricks.some(col => col.some(brick => brick.status === true)) && ball.y > BALL_Y) {
     brickWall.setUp();
   } else {
     for (let col = 0; col < brickWall.brickColumnCount; col++) {
       for (let row = 0; row < brickWall.brickRowCount; row++) {
-        const bricks = brickWall.bricks[col][row];
-        const powerUps = brickWall.powerUps[col][row] ?? null;
+        const brick = brickWall.bricks[col][row];
+        const powerUp = brickWall.powerUps[col][row];
 
-        if (bricks.status) {
-          if (ball.x >= bricks.x && ball.x <= bricks.x + bricks.width && ball.y >= bricks.y && ball.y <= bricks.y + bricks.height) {
+        // Cham brick
+        if (brick.status) {
+          if (ball.x >= brick.x && ball.x <= brick.x + brick.width && ball.y >= brick.y && ball.y <= brick.y + brick.height) {
             game.increaseScore();
-			bricks.status = false;
 
-            if (ball.dx < ball.speedMax && ball.dx > -ball.speedMax) ball.dy = -ball.dy * 1.01;
-            if (powerUps) powerUps.status = true;
+            if (brick.life > 1) {
+              brick.life--;
+              brick.color = reduceColorOpacity(brick.color);
+            } else {
+              brick.status = false;
+              if (powerUp) powerUp.status = true;
+            }
+
+            if (ball.dx < ball.speedMax && ball.dx > -ball.speedMax) ball.dy = -ball.dy * 1.002
           }
         }
-        
-        // Cham powerUps
-        if (powerUps && powerUps.status) {
-          if (powerUps.y + powerUps.height > paddle.y && powerUps.x > paddle.x && powerUps.x + powerUps.width < paddle.x + paddle.width) {
-            powerUps.status = false;
-            switch (powerUps.symbol) {
+
+        // Cham powerUp
+        if (powerUp && powerUp.status) {
+          if (powerUp.y + powerUp.height > paddle.y && powerUp.x > paddle.x && powerUp.x + powerUp.width < paddle.x + paddle.width) {
+            powerUp.status = false;
+            switch (powerUp.symbol) {
               case 'I':
                 paddle.width = paddle.width + 50 > canvas.width ? canvas.width : paddle.width + 50;
                 break;
@@ -67,17 +85,17 @@ const update = (game, ball, paddle, brickWall) => {
                 game.increaseLife();
                 break;
             }
-          } else if (powerUps.y + powerUps.height > canvas.height) {
-            powerUps.status = false;
+          } else if (powerUp.y + powerUp.height > canvas.height) {
+            powerUp.status = false;
           } else {
-            powerUps.y += powerUps.speed;
+            powerUp.y += powerUp.speed;
           }
         }
       }
     }
   }
 
-  // Thay doi vi tri
+  // Thay doi vi tri ball
   ball.x += ball.dx;
   ball.y += ball.dy;
 }

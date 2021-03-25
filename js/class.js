@@ -4,10 +4,10 @@ class Game {
     this.score = 0;
     this.over = true;
   }
-  
+
   draw() {
-	ctx.beginPath();
-    ctx.fillStyle = "#2b2e4a";
+	  ctx.beginPath();
+    ctx.fillStyle = "#2f335c";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.closePath();
   }
@@ -34,7 +34,7 @@ class Ball {
     this.x = BALL_X;
     this.y = BALL_Y;
     this.speed = BALL_SPEED;
-	this.speedMax = BALL_SPEED_MAX;
+    this.speedMax = BALL_SPEED_MAX;
     this.dx = this.speed;
     this.dy = -this.speed;
     this.color = BALL_COLOR;
@@ -76,8 +76,9 @@ class Brick {
     this.y = 0;
     this.color = color;
     this.status = true;
+    this.life = BRICK_LIFE;
   }
-;
+
   draw() {
     if (this.status) {
       ctx.beginPath();
