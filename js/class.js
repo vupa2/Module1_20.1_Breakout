@@ -7,7 +7,7 @@ class Game {
   }
 
   draw() {
-	  ctx.beginPath();
+    ctx.beginPath();
     ctx.fillStyle = this.color;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.closePath();
@@ -16,6 +16,7 @@ class Game {
   decreaseLife() {
     this.life--;
     document.querySelector('#life').innerText = this.life;
+    if (this.life <= 0) this.gameOver();
   }
 
   increaseLife() {
@@ -27,6 +28,17 @@ class Game {
     this.score++;
     document.querySelector('#score').innerText = this.score;
   }
+
+   changeColor() {
+     this.color = GAME_COLORS[randomNumber(GAME_COLORS.length - 1)];
+   }
+
+   gameOver() {
+      this.over = true;
+      saveToStorage(game.score);
+      alert("GAME OVER");
+      document.location.reload();
+   }
 }
 
 class Ball {
@@ -77,7 +89,7 @@ class Brick {
     this.y = 0;
     this.color = color;
     this.status = true;
-    this.life = BRICK_LIFE;
+    this.life = randomNumber(1, 2);
   }
 
   draw() {
@@ -93,14 +105,14 @@ class Brick {
 
 class BricksWall {
   constructor() {
-    this.padding = 8;
-    this.brickRowCount = 8;
-    this.brickColumnCount = 6;
-    this.brickOffsetTop = 25;
-    this.brickOffsetLeft = 30;
+    this.padding = WALL_BRICK_PADDING;
+    this.brickColumnCount = WALL_BRICK_COLUMN;
+    this.brickRowCount = WALL_BRICK_ROW;
+    this.brickOffsetTop = WALL_OFFSET_TOP;
+    this.brickOffsetLeft = WALL_OFFSET_LEFT;
     this.bricks = [];
     this.powerUps = [];
-    this.powerUpChance = 0.65;
+    this.powerUpChance = PUP_CHANCE;
   }
 
   setUp() {
@@ -143,7 +155,7 @@ class PowerUp {
     this.height = 0;
     this.x = 0;
     this.y = 0;
-    this.speed = 5;
+    this.speed = PUP_SPEED;
     this.type = PupType[Object.keys(PupType)[randomNumber(Object.keys(PupType).length - 1)]];
     this.color = this.type.color;
     this.symbol = this.type.symbol;

@@ -3,7 +3,6 @@ const randomNumber = (max, min = 0) => {
 }
 
 const getRandomColor = () => {
-  console.log(`rgb(${randomNumber(255)}, ${randomNumber(255)}, ${randomNumber(255)}, 1)`);
   return `rgb(${randomNumber(255)}, ${randomNumber(255)}, ${randomNumber(255)}, 1)`;
 }
 
@@ -15,6 +14,10 @@ const reduceColorOpacity = (rgbColor) => {
     i++;
     return (i === 4) ? parseFloat(match) - 0.5 : match;
   });
+}
+
+const saveToStorage = (score) => {
+  if (score > localStorage.getItem("highestScore")) localStorage.setItem("highestScore", score);
 }
 
 const update = (game, ball, paddle, brickWall) => {
@@ -29,10 +32,8 @@ const update = (game, ball, paddle, brickWall) => {
   } else if (ball.y + ball.dy > paddle.y & ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
     ball.dy = -ball.dy;
   } else if (ball.y + ball.dy > canvas.height - ball.ballRadius) {
-    ball.dy = -ball.dy; // lose
+    ball.dy = -ball.dy;
     game.decreaseLife();
-    // alert("GAME OVER");
-    // document.location.reload();
   }
 
   // Di chuyen Paddle
@@ -47,6 +48,7 @@ const update = (game, ball, paddle, brickWall) => {
   // Thay doi chieu speed khi cham bricks va powerUps
   if (!brickWall.bricks.some(col => col.some(brick => brick.status === true)) && ball.y > BALL_Y) {
     brickWall.setUp();
+    game.changeColor();
   } else {
     for (let col = 0; col < brickWall.brickColumnCount; col++) {
       for (let row = 0; row < brickWall.brickRowCount; row++) {
@@ -56,12 +58,12 @@ const update = (game, ball, paddle, brickWall) => {
         // Cham brick
         if (brick.status) {
           if (ball.x >= brick.x && ball.x <= brick.x + brick.width && ball.y >= brick.y && ball.y <= brick.y + brick.height) {
-            game.increaseScore();
 
             if (brick.life > 1) {
               brick.life--;
               brick.color = reduceColorOpacity(brick.color);
             } else {
+              game.increaseScore();
               brick.status = false;
               if (powerUp) powerUp.status = true;
             }
@@ -72,7 +74,7 @@ const update = (game, ball, paddle, brickWall) => {
 
         // Cham powerUp
         if (powerUp && powerUp.status) {
-          if (powerUp.y + powerUp.height > paddle.y && powerUp.x > paddle.x && powerUp.x + powerUp.width < paddle.x + paddle.width) {
+          if (powerUp.y + powerUp.height >= paddle.y && powerUp.x >= paddle.x && powerUp.x + powerUp.width <= paddle.x + paddle.width) {
             powerUp.status = false;
             switch (powerUp.symbol) {
               case 'I':

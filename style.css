@@ -35,7 +35,7 @@ body {
   text-align: center;
 }
 
-#game-info #high {
+#game-info #highest {
   color: #f2a154;
   font-size: 2rem;
   /* text-shadow: 0 0 1rem rgba(255, 255, 255, 0.726); */

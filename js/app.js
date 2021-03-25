@@ -8,7 +8,7 @@ const GAME_LIFE = 3;
 const BALL_RADIUS = 8,
       BALL_X = canvas.width / 2,
       BALL_Y = canvas.height / 1.4,
-      BALL_SPEED = 4,
+      BALL_SPEED = 4, // 4:Default
       BALL_SPEED_MAX = 30,
       BALL_COLOR = '#e7e6e1';
 
@@ -23,6 +23,15 @@ const BRICK_WIDTH = 67,
       BRICK_HEIGHT = 27,
       BRICK_COLOR = '#e84545';
       BRICK_LIFE = 2;
+
+const WALL_BRICK_PADDING = 8,
+      WALL_BRICK_COLUMN = 6,
+      WALL_BRICK_ROW = 8,
+      WALL_OFFSET_TOP = 25,
+      WALL_OFFSET_LEFT = 30;
+
+const PUP_CHANCE = 0.65,
+      PUP_SPEED = 4;
 
 const PupType = {
   INCREASE: {color: "#17FF00", symbol: "I"},
@@ -43,7 +52,12 @@ const drawAll = () => {
   brickWall.draw();
   paddle.draw();
   ball.draw();
-  if (!game.over) update(game, ball, paddle, brickWall);
+
+  if (game.over) {
+    
+  } else {
+    update(game, ball, paddle, brickWall);
+  }
 
   requestAnimationFrame(drawAll);
 }

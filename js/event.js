@@ -38,6 +38,14 @@ const keyUpHandler = (e) => {
   }
 }
 
+const initialize = () => {
+  const highestScoreTag = document.querySelector('#game-info #highest span')
+  const highestScoreData = localStorage.getItem("highestScore");
+
+  highestScoreTag.innerText = highestScoreData ? highestScoreData : 0;
+}
+
+document.addEventListener("DOMContentLoaded", initialize, false)
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
-document.querySelector('#game-info button').addEventListener('click', gameStateControl)
+document.querySelector('#game-info button').addEventListener('click', gameStateControl, false)
