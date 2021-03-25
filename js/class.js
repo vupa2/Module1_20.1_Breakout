@@ -1,13 +1,14 @@
 class Game {
   constructor() {
-    this.life = LIFE;
+    this.life = GAME_LIFE;
     this.score = 0;
     this.over = true;
+    this.color = GAME_COLORS[randomNumber(GAME_COLORS.length - 1)];
   }
 
   draw() {
 	  ctx.beginPath();
-    ctx.fillStyle = "#2f335c";
+    ctx.fillStyle = this.color;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.closePath();
   }
