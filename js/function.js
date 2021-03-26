@@ -19,8 +19,8 @@ const saveToStorage = (score) => {
   if (score > localStorage.getItem("highestScore")) localStorage.setItem("highestScore", score);
 }
 
-const ballCheckCollision = (ball, targetObject) => {
-  return ball.xRight >= targetObject.x && ball.xLeft <= targetObject.x + targetObject.width && ball.yBot >= targetObject.y && ball.yTop <= targetObject.y + targetObject.height;
+const ballCheckCollision = (ball, target) => {
+  return ball.xRight >= target.x && ball.xLeft <= target.x + target.width && ball.yBot >= target.y && ball.yTop <= target.y + target.height;
 }
 
 const otherCheckCollisionDown = (current, target) => {
@@ -28,7 +28,7 @@ const otherCheckCollisionDown = (current, target) => {
 }
 
 const otherCheckCollisionUp = (current, target) => {
-  return current.y >= target.y && current.y <= target.y + target.height && current.x >= target.x && current.x <= target.x + target.width
+  return current.x + current.width >= target.x && current.x <= target.x + target.width && current.y <= target.y + target.height && current.y >= target.y;
 }
 
 const brickBreak = (brick, powerUp) => {
