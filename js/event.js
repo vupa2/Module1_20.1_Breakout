@@ -2,13 +2,12 @@
 let rightPressed = false, leftPressed = false;
 
 const gameStateControl = () => {
-console.log('run');
   game.over = false;
 
   const button = document.querySelector('#game-info button');
-  if (button.innerText === 'Space To Start') {
-    button.innerText = 'Space To Restart';
-  } else if (button.innerText === 'Space To Restart') {
+  if (button.innerText === 'Enter To Start') {
+    button.innerText = 'Enter To Restart';
+  } else if (button.innerText === 'Enter To Restart') {
     document.location.reload();
   }
 }
@@ -22,6 +21,9 @@ const keyDownHandler = (e) => {
       leftPressed = true;
       break;
     case 32:
+      game.fireBullet()
+      break;
+    case 13:
       gameStateControl();
       break;
   }
@@ -43,9 +45,10 @@ const initialize = () => {
   const highestScoreData = localStorage.getItem("highestScore");
 
   highestScoreTag.innerText = highestScoreData ? highestScoreData : 0;
+
+  document.addEventListener("keydown", keyDownHandler, false);
+  document.addEventListener("keyup", keyUpHandler, false);
+  document.querySelector('#game-info button').addEventListener('click', gameStateControl, false)
 }
 
 document.addEventListener("DOMContentLoaded", initialize, false)
-document.addEventListener("keydown", keyDownHandler, false);
-document.addEventListener("keyup", keyUpHandler, false);
-document.querySelector('#game-info button').addEventListener('click', gameStateControl, false)

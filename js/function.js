@@ -10,7 +10,6 @@ const reduceColorOpacity = (rgbColor) => {
   const regex = /\d+(\.\d+)?/g;
   let i = 0
   return rgbColor.replace(regex, match => {
-    // const newOpacity = parseFloat(match) - 0.25
     i++;
     return (i === 4) ? parseFloat(match) - 0.5 : match;
   });
@@ -20,30 +19,50 @@ const saveToStorage = (score) => {
   if (score > localStorage.getItem("highestScore")) localStorage.setItem("highestScore", score);
 }
 
-const update = (game, ball, paddle, brickWall) => {
+const ballCheckCollision = (ball, targetObject) => {
+  return ball.xRight >= targetObject.x && ball.xLeft <= targetObject.x + targetObject.width && ball.yBot >= targetObject.y && ball.yTop <= targetObject.y + targetObject.height;
+}
+
+const otherCheckCollisionDown = (current, target) => {
+  return current.y + current.height >= target.y && current.x >= target.x && current.x + current.width <= target.x + target.width;
+}
+
+const otherCheckCollisionUp = (current, target) => {
+  return current.y >= target.y && current.y <= target.y + target.height && current.x >= target.x && current.x <= target.x + target.width
+}
+
+const brickBreak = (brick, powerUp) => {
+  if (brick.life > 1) {
+    brick.life--;
+    brick.color = reduceColorOpacity(brick.color);
+  } else {
+    game.increaseScore();
+    brick.status = false;
+    if (powerUp) powerUp.status = true;
+  }
+}
+
+const update = () => {
+  // Update vi tri so sanh
+  ball.update();
+
   // Thay doi chieu speed khi cham tuong
-  if (ball.x + ball.dx > canvas.width - ball.ballRadius || ball.x + ball.dx < ball.ballRadius) {
+  if (ball.xLeft < 0 || ball.xRight >= canvas.width) {
     ball.dx = -ball.dx;
   }
 
   // Thay doi chieu speed khi cham tuong + paddle
-  if (ball.y + ball.dy < ball.ballRadius) {
+  if (ball.yTop <= 0) {
     ball.dy = -ball.dy;
-  } else if (ball.y + ball.dy > paddle.y & ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
+  } else if (ballCheckCollision(ball, paddle)) {
     ball.dy = -ball.dy;
-  } else if (ball.y + ball.dy > canvas.height - ball.ballRadius) {
+  } else if (ball.yBot >= canvas.height) {
     ball.dy = -ball.dy;
     game.decreaseLife();
   }
 
   // Di chuyen Paddle
-  if (rightPressed) {
-    paddle.x += paddle.speed;
-    if (paddle.x + paddle.width > canvas.width) paddle.x = canvas.width - paddle.width;
-  } else if (leftPressed) {
-    paddle.x -= paddle.speed;
-    if (paddle.x < 0) paddle.x = 0;
-  }
+  paddle.move();
 
   // Thay doi chieu speed khi cham bricks va powerUps
   if (!brickWall.bricks.some(col => col.some(brick => brick.status === true)) && ball.y > BALL_Y) {
@@ -56,25 +75,23 @@ const update = (game, ball, paddle, brickWall) => {
         const powerUp = brickWall.powerUps[col][row];
 
         // Cham brick
-        if (brick.status) {
-          if (ball.x >= brick.x && ball.x <= brick.x + brick.width && ball.y >= brick.y && ball.y <= brick.y + brick.height) {
-
-            if (brick.life > 1) {
-              brick.life--;
-              brick.color = reduceColorOpacity(brick.color);
-            } else {
-              game.increaseScore();
-              brick.status = false;
-              if (powerUp) powerUp.status = true;
-            }
-
-            if (ball.dx < ball.speedMax && ball.dx > -ball.speedMax) ball.dy = -ball.dy * 1.002
+        if (brick && brick.status) {
+          if (ballCheckCollision(ball, brick)) {
+            brickBreak(brick, powerUp);
+            if (ball.dx < ball.speedMax && ball.dx > -ball.speedMax) ball.dy = -ball.dy * 1.002;
           }
+
+          bullets.forEach((bullet, index) => {
+            if (otherCheckCollisionUp(bullet, brick)) {
+              brickBreak(brick, powerUp);
+              bullets.splice(index, 1);
+            }
+          });
         }
 
         // Cham powerUp
         if (powerUp && powerUp.status) {
-          if (powerUp.y + powerUp.height >= paddle.y && powerUp.x >= paddle.x && powerUp.x + powerUp.width <= paddle.x + paddle.width) {
+          if (otherCheckCollisionDown(powerUp, paddle)) {
             powerUp.status = false;
             switch (powerUp.symbol) {
               case 'I':
@@ -85,6 +102,9 @@ const update = (game, ball, paddle, brickWall) => {
                 break;
               case 'L':
                 game.increaseLife();
+                break;
+              case 'G':
+                game.changeBulletsState();
                 break;
             }
           } else if (powerUp.y + powerUp.height > canvas.height) {

@@ -4,6 +4,7 @@ class Game {
     this.score = 0;
     this.over = true;
     this.color = GAME_COLORS[randomNumber(GAME_COLORS.length - 1)];
+    this.bulletsState = false;
   }
 
   draw() {
@@ -39,11 +40,21 @@ class Game {
       alert("GAME OVER");
       document.location.reload();
    }
+
+   changeBulletsState() {
+     this.bulletsState = true;
+     setTimeout(() => { this.bulletsState = false; }, 2000)
+   }
+
+   fireBullet() {
+     if (this.bulletsState) bullets.push(new Bullet(paddle));
+   }
 }
 
 class Ball {
   constructor() {
-    this.ballRadius = BALL_RADIUS;
+    this.radius = BALL_RADIUS;
+    this.diameter = this.radius * 2;
     this.x = BALL_X;
     this.y = BALL_Y;
     this.speed = BALL_SPEED;
@@ -55,10 +66,17 @@ class Ball {
 
   draw() {
     ctx.beginPath();
-    ctx.arc(this.x, this.y, this.ballRadius, 0, Math.PI * 2);
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
     ctx.fillStyle = this.color;
     ctx.fill();
     ctx.closePath();
+  }
+
+  update() {
+    this.xLeft = this.x - this.radius;
+    this.xRight = this.x + this.radius;
+    this.yTop = this.y - this.radius;
+    this.yBot = this.y + this.radius;
   }
 }
 
@@ -70,6 +88,10 @@ class Paddle {
     this.y = PADDLE_Y;
     this.color = PADDLE_COLOR;
     this.speed = PADDLE_SPEED;
+    this.xLeft = this.x - this.radius;
+    this.xRight = this.x + this.radius;
+    this.yTop = this.y - this.radius;
+    this.yBot = this.y + this.radius;
   }
 
   draw() {
@@ -78,6 +100,16 @@ class Paddle {
     ctx.fillStyle = this.color;
     ctx.fill();
     ctx.closePath();
+  }
+
+  move() {
+    if (rightPressed) {
+      this.x += this.speed;
+      if (this.x + this.width > canvas.width) this.x = canvas.width - this.width;
+    } else if (leftPressed) {
+      this.x -= this.speed;
+      if (this.x < 0) this.x = 0;
+    }
   }
 }
 
@@ -89,7 +121,7 @@ class Brick {
     this.y = 0;
     this.color = color;
     this.status = true;
-    this.life = randomNumber(1, 2);
+    this.life = 2;
   }
 
   draw() {
@@ -181,5 +213,30 @@ class PowerUp {
       ctx.fillText(this.symbol, this.x, this.y);
       ctx.closePath();
     }
+  }
+}
+
+class Bullet {
+  constructor(paddle) {
+    this.width = BULLET_WIDTH;
+    this.height = BULLET_HEIGHT;
+    this.x = paddle.x + paddle.width / 2 - this.width / 2;
+    this.y = paddle.y - this.height;
+    this.speed = 4;
+    this.status = false;
+    this.color = 'red';
+  }
+
+  setUp(paddle) {
+    this.x = paddle.x + paddle.width / 2 - this.width / 2;
+    this.y = paddle.y - this.height;
+  }
+
+  draw() {
+    ctx.beginPath();
+    ctx.rect(this.x, this.y, this.width, this.height);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+    ctx.closePath();
   }
 }

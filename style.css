@@ -21,8 +21,8 @@ body {
 
 #game-info {
   background-color: #2f335c;
-  max-width: 300px;
-  width: 100%;
+  /* max-width: 400px; */
+  width: 300px;
   margin-left: 100px;
   border-radius: 10px;
   border: 5px solid #f37121;
