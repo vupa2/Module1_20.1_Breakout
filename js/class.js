@@ -2,53 +2,67 @@ class Game {
   constructor() {
     this.life = GAME_LIFE;
     this.score = 0;
-    this.over = true;
+    this.status = false;
     this.color = GAME_COLORS[randomNumber(GAME_COLORS.length - 1)];
     this.bulletsState = false;
   }
-
+  
   draw() {
     ctx.beginPath();
     ctx.fillStyle = this.color;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.closePath();
   }
-
+  
   decreaseLife() {
     this.life--;
     document.querySelector('#life').innerText = this.life;
-    if (this.life <= 0) this.gameOver();
+    if (this.life <= 0) this.over();
   }
-
+  
   increaseLife() {
     this.life++;
     document.querySelector('#life').innerText = this.life;
   }
-
+  
   increaseScore() {
     this.score++;
     document.querySelector('#score').innerText = this.score;
   }
-
-   changeColor() {
-     this.color = GAME_COLORS[randomNumber(GAME_COLORS.length - 1)];
-   }
-
-   gameOver() {
-      this.over = true;
-      saveToStorage(game.score);
-      alert("GAME OVER");
+  
+  changeColor() {
+    this.color = GAME_COLORS[randomNumber(GAME_COLORS.length - 1)];
+  }
+  
+  statusControl() {
+    const button = document.querySelector('#game-info button');
+    if (!game.status) {
+      game.status = true;
+      button.innerText = 'Enter To Restart';
+    } else {
       document.location.reload();
-   }
-
-   changeBulletsState() {
-     this.bulletsState = true;
-     setTimeout(() => { this.bulletsState = false; }, 2000)
-   }
-
-   fireBullet() {
-     if (this.bulletsState) bullets.push(new Bullet(paddle));
-   }
+    }
+  }
+  
+  over() {
+    this.status = false;
+    this.saveToStorage();
+    alert("GAME OVER");
+    document.location.reload();
+  }
+  
+  saveToStorage() {
+    if (this.score > parseInt(localStorage.getItem("highestScore"))) localStorage.setItem("highestScore", this.score);
+  }
+  
+  changeBulletsState() {
+    this.bulletsState = true;
+    setTimeout(() => { this.bulletsState = false; }, 2000)
+  }
+  
+  fireBullet() {
+    if (this.bulletsState) bullets.push(new Bullet(paddle));
+  }
 }
 
 class Ball {
@@ -63,7 +77,7 @@ class Ball {
     this.dy = -this.speed;
     this.color = BALL_COLOR;
   }
-
+  
   draw() {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
@@ -71,12 +85,16 @@ class Ball {
     ctx.fill();
     ctx.closePath();
   }
-
+  
   update() {
     this.xLeft = this.x - this.radius;
     this.xRight = this.x + this.radius;
     this.yTop = this.y - this.radius;
     this.yBot = this.y + this.radius;
+  }
+  
+  checkCollision(target) {
+    return this.xRight >= target.x && this.xLeft <= target.x + target.width && this.yBot >= target.y && this.yTop <= target.y + target.height;
   }
 }
 
@@ -93,7 +111,7 @@ class Paddle {
     this.yTop = this.y - this.radius;
     this.yBot = this.y + this.radius;
   }
-
+  
   draw() {
     ctx.beginPath();
     ctx.rect(this.x, this.y, this.width, this.height);
@@ -101,7 +119,7 @@ class Paddle {
     ctx.fill();
     ctx.closePath();
   }
-
+  
   move() {
     if (rightPressed) {
       this.x += this.speed;
@@ -123,7 +141,7 @@ class Brick {
     this.status = true;
     this.life = 2;
   }
-
+  
   draw() {
     if (this.status) {
       ctx.beginPath();
@@ -146,7 +164,7 @@ class BricksWall {
     this.powerUps = [];
     this.powerUpChance = PUP_CHANCE;
   }
-
+  
   setUp() {
     this.bricks = [];
     this.powerUps = [];
@@ -156,25 +174,25 @@ class BricksWall {
       const color = getRandomColor()
       for (let row = 0; row < this.brickRowCount; row++) {
         this.bricks[col][row] = new Brick(color);
-
+        
         if (Math.random() >= this.powerUpChance) this.powerUps[col][row] = new PowerUp();
       }
     }
   }
-
+  
   draw() {
-    for(let col = 0; col < this.brickColumnCount; col++) {
-      for(let row = 0; row < this.brickRowCount; row++) {
+    for (let col = 0; col < this.brickColumnCount; col++) {
+      for (let row = 0; row < this.brickRowCount; row++) {
         const bricks = this.bricks[col][row];
         const powerUps = this.powerUps[col][row] ?? null;
-
+        
         if (bricks.status) {
           bricks.x = (col * (bricks.width + this.padding)) + this.brickOffsetLeft;
           bricks.y = (row * (bricks.height + this.padding)) + this.brickOffsetTop;
           if (powerUps) powerUps.setUp(bricks.x, bricks.y, bricks.width, bricks.height);
           bricks.draw();
         }
-
+        
         if (powerUps) powerUps.draw();
       }
     }
@@ -193,14 +211,14 @@ class PowerUp {
     this.symbol = this.type.symbol;
     this.status = false;
   }
-
+  
   setUp(brickX, brickY, brickWidth, brickHeight) {
     this.x = brickX + brickWidth / 2;
     this.y = brickY + brickHeight / 2;
     this.width = brickHeight / 1.4;
     this.height = this.width;
   }
-
+  
   draw() {
     if (this.status) {
       ctx.beginPath();
@@ -226,12 +244,12 @@ class Bullet {
     this.status = false;
     this.color = 'red';
   }
-
+  
   setUp(paddle) {
     this.x = paddle.x + paddle.width / 2 - this.width / 2;
     this.y = paddle.y - this.height;
   }
-
+  
   draw() {
     ctx.beginPath();
     ctx.rect(this.x, this.y, this.width, this.height);

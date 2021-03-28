@@ -1,5 +1,5 @@
 const randomNumber = (max, min = 0) => {
-  return Math.floor(Math.random() * (max - min + 1) ) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 const getRandomColor = () => {
@@ -13,14 +13,6 @@ const reduceColorOpacity = (rgbColor) => {
     i++;
     return (i === 4) ? parseFloat(match) - 0.5 : match;
   });
-}
-
-const saveToStorage = (score) => {
-  if (score > localStorage.getItem("highestScore")) localStorage.setItem("highestScore", score);
-}
-
-const ballCheckCollision = (ball, target) => {
-  return ball.xRight >= target.x && ball.xLeft <= target.x + target.width && ball.yBot >= target.y && ball.yTop <= target.y + target.height;
 }
 
 const otherCheckCollisionDown = (current, target) => {
@@ -45,25 +37,25 @@ const brickBreak = (brick, powerUp) => {
 const update = () => {
   // Update vi tri so sanh
   ball.update();
-
+  
   // Thay doi chieu speed khi cham tuong
   if (ball.xLeft < 0 || ball.xRight >= canvas.width) {
     ball.dx = -ball.dx;
   }
-
+  
   // Thay doi chieu speed khi cham tuong + paddle
   if (ball.yTop <= 0) {
     ball.dy = -ball.dy;
-  } else if (ballCheckCollision(ball, paddle)) {
+  } else if (ball.checkCollision(paddle)) {
     ball.dy = -ball.dy;
   } else if (ball.yBot >= canvas.height) {
     ball.dy = -ball.dy;
     game.decreaseLife();
   }
-
+  
   // Di chuyen Paddle
   paddle.move();
-
+  
   // Thay doi chieu speed khi cham bricks va powerUps
   if (!brickWall.bricks.some(col => col.some(brick => brick.status === true)) && ball.y > BALL_Y) {
     brickWall.setUp();
@@ -73,14 +65,14 @@ const update = () => {
       for (let row = 0; row < brickWall.brickRowCount; row++) {
         const brick = brickWall.bricks[col][row];
         const powerUp = brickWall.powerUps[col][row];
-
+        
         // Cham brick
         if (brick && brick.status) {
-          if (ballCheckCollision(ball, brick)) {
+          if (ball.checkCollision(brick)) {
             brickBreak(brick, powerUp);
             if (ball.dx < ball.speedMax && ball.dx > -ball.speedMax) ball.dy = -ball.dy * 1.002;
           }
-
+          
           bullets.forEach((bullet, index) => {
             if (otherCheckCollisionUp(bullet, brick)) {
               brickBreak(brick, powerUp);
@@ -88,7 +80,7 @@ const update = () => {
             }
           });
         }
-
+        
         // Cham powerUp
         if (powerUp && powerUp.status) {
           if (otherCheckCollisionDown(powerUp, paddle)) {
@@ -116,7 +108,7 @@ const update = () => {
       }
     }
   }
-
+  
   // Thay doi vi tri ball
   ball.x += ball.dx;
   ball.y += ball.dy;

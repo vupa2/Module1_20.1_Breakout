@@ -24,9 +24,9 @@ const BRICK_WIDTH = 67,
       BRICK_COLOR = '#e84545';
       BRICK_LIFE = 2;
 
-const WALL_BRICK_PADDING = 8,
-      WALL_BRICK_COLUMN = 6,
-      WALL_BRICK_ROW = 8,
+const WALL_BRICK_PADDING = 8, // 8
+      WALL_BRICK_COLUMN = 6, // 6
+      WALL_BRICK_ROW = 8, // 8
       WALL_OFFSET_TOP = 25,
       WALL_OFFSET_LEFT = 30;
 
@@ -38,7 +38,7 @@ const BULLET_WIDTH = 10;
 
 const PupType = {
   INCREASE: {color: "#17FF00", symbol: "I"},
-  DECRESE: {color: "#FFD500", symbol: "D"},
+  DECREASE: {color: "#FFD500", symbol: "D"},
   LIFE: {color: "#F875AA", symbol: "L"},
   GUN: {color: "#75F8ED", symbol: "G"}
 }
@@ -61,15 +61,11 @@ const drawAll = () => {
   if (bullets.length > 0) {
     bullets.forEach((bullet, index) => {
       bullet.draw();
-      if (bullet.y < 0) {
-        bullets.splice(index, 1);
-      } else {
-        bullet.y -= 2;
-      }
+      bullet.y < 0 ? bullets.splice(index, 1) : bullet.y -= 2;
     });
   }
 
-  if (!game.over) update(game, ball, paddle, brickWall);
+  if (game.status) update(game, ball, paddle, brickWall);
 
   requestAnimationFrame(drawAll);
 }
