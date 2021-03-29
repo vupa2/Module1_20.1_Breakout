@@ -31,10 +31,14 @@ const keyUpHandler = (e) => {
 
 const initialize = () => {
   const highestScoreTag = document.querySelector('#game-info #highest span')
+  const levelTag = document.querySelector('#level');
+  const lifeTag = document.querySelector('#life');
   const highestScoreData = localStorage.getItem("highestScore");
-  
+
   highestScoreTag.innerText = highestScoreData ? highestScoreData : 0;
-  
+  levelTag.innerText = 1;
+  lifeTag.innerText = GAME_LIFE;
+
   document.addEventListener("keydown", keyDownHandler, false);
   document.addEventListener("keyup", keyUpHandler, false);
   document.querySelector('#game-info button').addEventListener('click', () => { game.statusControl(); }, false);

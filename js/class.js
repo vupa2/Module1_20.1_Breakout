@@ -62,7 +62,7 @@ class Game {
   }
 
   saveToStorage() {
-    if (this.score > parseInt(localStorage.getItem("highestScore"))) localStorage.setItem("highestScore", this.score);
+    if (this.score > localStorage.getItem("highestScore")) localStorage.setItem("highestScore", this.score);
   }
 
   changeBulletsState() {

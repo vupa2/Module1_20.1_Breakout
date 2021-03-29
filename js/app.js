@@ -2,7 +2,7 @@ const canvas = document.getElementById("main-game"),
       ctx = canvas.getContext("2d");
 
 // Tham so
-const GAME_LIFE = 1; // 3
+const GAME_LIFE = 3; // 3
       GAME_COLORS = ['#2f335c', '#9c3d54', '#387c6d'];
 
 const BALL_RADIUS = 8,
