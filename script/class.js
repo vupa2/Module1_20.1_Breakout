@@ -60,7 +60,7 @@ class Game {
   over() {
     this.status = false;
     this.saveToStorage();
-    alert("GAME OVER");
+    alert(`GAME OVER, Your score is ${this.score}`);
     document.location.reload();
   }
 
