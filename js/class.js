@@ -5,6 +5,7 @@ class Game {
     this.status = false;
     this.color = GAME_COLORS[randomNumber(GAME_COLORS.length - 1)];
     this.bulletsState = false;
+    this.level = 1;
   }
   
   draw() {
@@ -12,6 +13,8 @@ class Game {
     ctx.fillStyle = this.color;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.closePath();
+    
+    canvas.style.backgroundColor = this.color;
   }
   
   decreaseLife() {
@@ -28,6 +31,13 @@ class Game {
   increaseScore() {
     this.score++;
     document.querySelector('#score').innerText = this.score;
+  }
+  
+  increaseLevel(ball) {
+    this.level++;
+    document.querySelector('ul li span#level').innerText = this.level
+    ball.updateSpeed(this.level);
+    this.changeColor();
   }
   
   changeColor() {
@@ -63,6 +73,25 @@ class Game {
   fireBullet() {
     if (this.bulletsState) bullets.push(new Bullet(paddle));
   }
+  
+  checkCollision(current, target, direction = 'up') {
+    const checkX = current.x + current.width >= target.x && current.x <= target.x + target.width;
+    if (checkX) {
+      let checkY;
+      switch (direction.toLocaleLowerCase()) {
+        case 'up':
+          checkY = current.y <= target.y + target.height && current.y + current.height >= target.y;
+          break;
+        case 'down':
+          checkY = current.y + current.height >= target.y && current.y <= target.y + target.height;
+          break;
+      }
+      
+      return checkX && checkY;
+    }
+    
+    return false;
+  }
 }
 
 class Ball {
@@ -72,8 +101,7 @@ class Ball {
     this.x = BALL_X;
     this.y = BALL_Y;
     this.speed = BALL_SPEED;
-    this.speedMax = BALL_SPEED_MAX;
-    this.dx = this.speed;
+    this.dx = this.speed * randomNegativePositive();
     this.dy = -this.speed;
     this.color = BALL_COLOR;
   }
@@ -86,11 +114,19 @@ class Ball {
     ctx.closePath();
   }
   
-  update() {
+  updateSizeCompare() {
     this.xLeft = this.x - this.radius;
     this.xRight = this.x + this.radius;
     this.yTop = this.y - this.radius;
     this.yBot = this.y + this.radius;
+  }
+  
+  updateSpeed(level) {
+    if (this.speed < BALL_SPEED_MAX) {
+      this.speed = BALL_SPEED * (1 + level / 10);
+      this.dx = this.dx / Math.abs(this.dx) * this.speed;
+      this.dy = this.dy / Math.abs(this.dy) * this.speed;
+    }
   }
   
   checkCollision(target) {
@@ -139,7 +175,7 @@ class Brick {
     this.y = 0;
     this.color = color;
     this.status = true;
-    this.life = 2;
+    this.life = randomNumber(1, 2);
   }
   
   draw() {
@@ -149,6 +185,17 @@ class Brick {
       ctx.fillStyle = this.color;
       ctx.fill();
       ctx.closePath();
+    }
+  }
+  
+  break(powerUp) {
+    if (this.life > 1) {
+      this.life--;
+      this.color = reduceColorOpacity(this.color);
+    } else {
+      this.status = false;
+      if (powerUp) powerUp.status = true;
+      game.increaseScore();
     }
   }
 }

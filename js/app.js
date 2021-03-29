@@ -2,14 +2,14 @@ const canvas = document.getElementById("main-game"),
       ctx = canvas.getContext("2d");
 
 // Tham so
-const GAME_LIFE = 3; // 3
+const GAME_LIFE = 5; // 3
       GAME_COLORS = ['#2f335c', '#9c3d54', '#387c6d'];
 
 const BALL_RADIUS = 8,
       BALL_X = canvas.width / 2,
-      BALL_Y = canvas.height / 1.4,
+      BALL_Y = canvas.height / 1.1,
       BALL_SPEED = 4, // 4:Default
-      BALL_SPEED_MAX = 30,
+      BALL_SPEED_MAX = 20,
       BALL_COLOR = '#e7e6e1';
 
 const PADDLE_WIDTH = 80,
@@ -17,7 +17,7 @@ const PADDLE_WIDTH = 80,
       PADDLE_X = (canvas.width - PADDLE_WIDTH) / 2,
       PADDLE_Y = canvas.height - PADDLE_HEIGHT - 20,
       PADDLE_COLOR = '#f2a154',
-      PADDLE_SPEED = 12;
+      PADDLE_SPEED = 10;
 
 const BRICK_WIDTH = 67,
       BRICK_HEIGHT = 27,
@@ -30,17 +30,17 @@ const WALL_BRICK_PADDING = 8, // 8
       WALL_OFFSET_TOP = 25,
       WALL_OFFSET_LEFT = 30;
 
-const PUP_CHANCE = 0.5,
+const PUP_CHANCE = 0.25,
       PUP_SPEED = 4;
 
 const BULLET_WIDTH = 10;
       BULLET_HEIGHT = 10;
 
 const PupType = {
-  INCREASE: {color: "#17FF00", symbol: "I"},
-  DECREASE: {color: "#FFD500", symbol: "D"},
-  LIFE: {color: "#F875AA", symbol: "L"},
-  GUN: {color: "#75F8ED", symbol: "G"}
+      INCREASE: {color: "#17FF00", symbol: "I"},
+      DECREASE: {color: "#FFD500", symbol: "D"},
+      LIFE: {color: "#F875AA", symbol: "L"},
+      GUN: {color: "#75F8ED", symbol: "G"}
 }
 
 // Doi Tuong
@@ -48,8 +48,9 @@ const bullets = [];
 const game = new Game();
 const ball = new Ball();
 const paddle = new Paddle();
+
 const brickWall = new BricksWall();
-brickWall.setUp()
+brickWall.setUp();
 
 const drawAll = () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -57,16 +58,16 @@ const drawAll = () => {
   brickWall.draw();
   paddle.draw();
   ball.draw();
-
+  
   if (bullets.length > 0) {
     bullets.forEach((bullet, index) => {
       bullet.draw();
       bullet.y < 0 ? bullets.splice(index, 1) : bullet.y -= 2;
     });
   }
-
+  
   if (game.status) update(game, ball, paddle, brickWall);
-
+  
   requestAnimationFrame(drawAll);
 }
 
