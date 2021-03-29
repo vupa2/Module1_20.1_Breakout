@@ -25,7 +25,7 @@ const GAME_LIFE = 3; // 3
 const BALL_RADIUS = 8,
       BALL_X = canvas.width / 2,
       BALL_Y = canvas.height / 1.1,
-      BALL_SPEED = 4, // 4:Default
+      BALL_SPEED = 7, // 4:Default
       BALL_SPEED_MAX = 20,
       BALL_COLOR = '#e7e6e1';
 
