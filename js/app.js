@@ -2,7 +2,7 @@ const canvas = document.getElementById("main-game"),
       ctx = canvas.getContext("2d");
 
 // Tham so
-const GAME_LIFE = 5; // 3
+const GAME_LIFE = 1; // 3
       GAME_COLORS = ['#2f335c', '#9c3d54', '#387c6d'];
 
 const BALL_RADIUS = 8,
@@ -58,16 +58,16 @@ const drawAll = () => {
   brickWall.draw();
   paddle.draw();
   ball.draw();
-  
+
   if (bullets.length > 0) {
     bullets.forEach((bullet, index) => {
       bullet.draw();
       bullet.y < 0 ? bullets.splice(index, 1) : bullet.y -= 2;
     });
   }
-  
+
   if (game.status) update(game, ball, paddle, brickWall);
-  
+
   requestAnimationFrame(drawAll);
 }
 
