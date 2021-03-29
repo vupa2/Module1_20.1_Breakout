@@ -47,8 +47,8 @@ const WALL_BRICK_PADDING = 8, // 8
       WALL_OFFSET_TOP = 25,
       WALL_OFFSET_LEFT = 30;
 
-const PUP_CHANCE = 0.25,
-      PUP_SPEED = 4;
+const PUP_CHANCE = 0.35,
+      PUP_SPEED = 2;
 
 const BULLET_WIDTH = 10;
       BULLET_HEIGHT = 10;
