@@ -6,6 +6,7 @@ class Game {
     this.color = GAME_COLORS[randomNumber(GAME_COLORS.length - 1)];
     this.bulletsState = false;
     this.level = 1;
+    this.bulletsStateTimeout;
   }
 
   draw() {
@@ -68,8 +69,8 @@ class Game {
   }
 
   changeBulletsState() {
-    this.bulletsState = true;
-    setTimeout(() => { this.bulletsState = false; }, 2000)
+    this.bulletsState ? clearTimeout(this.bulletsStateTimeout) : this.bulletsState= true;
+    this.bulletsStateTimeout = setTimeout(() => { this.bulletsState = false; }, 2000);
   }
 
   fireBullet() {

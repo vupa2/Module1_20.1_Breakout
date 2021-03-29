@@ -38,7 +38,7 @@ const PADDLE_WIDTH = 80,
 
 const BRICK_WIDTH = 67,
       BRICK_HEIGHT = 27,
-      BRICK_COLOR = '#e84545';
+      BRICK_COLOR = '#e84545',
       BRICK_LIFE = 2;
 
 const WALL_BRICK_PADDING = 8, // 8
