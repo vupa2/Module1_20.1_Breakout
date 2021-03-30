@@ -6,17 +6,17 @@ const FX_HIT_BRICK = new Audio("audio/brick_hit.mp3"),
       FX_HIT_PADDLE = new Audio("audio/paddle_hit.mp3"),
       FX_HIT_WALL = new Audio("audio/wall.mp3"),
       FX_HIT_POWER = new Audio("audio/powerup.mp3"),
-      FX_LIFE_LOST = new Audio("/audio/life_lost.mp3"),
+      FX_LIFE_LOST = new Audio("audio/life_lost.mp3"),
       FX_NEXT_LEVEL = new Audio("audio/win.mp3"),
       FX_BULLET = new Audio("audio/bullet.wav");
 
-FX_HIT_BRICK.volume = 0.08;
-FX_HIT_PADDLE.volume = 0.08;
-FX_HIT_POWER.volume = 0.2;
-FX_HIT_WALL.volume = 0.08;
-FX_LIFE_LOST.volume = 0.08;
-FX_NEXT_LEVEL.volume = 0.1;
-FX_BULLET.volume = 0.1;
+FX_HIT_BRICK.volume = 0.23;
+FX_HIT_PADDLE.volume = 0.23;
+FX_HIT_POWER.volume = 0.35;
+FX_HIT_WALL.volume = 0.23;
+FX_LIFE_LOST.volume = 0.23;
+FX_NEXT_LEVEL.volume = 0.25;
+FX_BULLET.volume = 0.25;
 
 // Tham so
 const GAME_LIFE = 3; // 3
