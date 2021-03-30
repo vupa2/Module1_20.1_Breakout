@@ -85,7 +85,9 @@ const drawAll = () => {
 
   if (game.status) update(game, ball, paddle, brickWall);
 
-  requestAnimationFrame(drawAll);
+  // requestAnimationFrame(drawAll);
+  setTimeout(drawAll, 1000/60);
 }
 
-requestAnimationFrame(drawAll);
+// requestAnimationFrame(drawAll);
+drawAll();
